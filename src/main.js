@@ -29,9 +29,19 @@ let config = {
             }
         }
     },
-    width: 1440,
+    plugins: {
+        scene: [
+            {
+                key: 'rexUI',
+                plugin: RexUIPlugin, // It finds this globally
+                mapping: 'rexUI'
+            }
+        ]
+    },
+    width: 1260,
     height: 900,
     scene: [Load, Platformer]
+    
 }
 
 var cursors;

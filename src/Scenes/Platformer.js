@@ -24,7 +24,7 @@ class Platformer extends Phaser.Scene {
 
         // Create a new tilemap game object which uses 18x18 pixel tiles, and is
         // 45 tiles wide and 25 tiles tall.
-        this.map = this.add.tilemap("platformer-level-1", 18, 18, 45, 25);
+        this.map = this.add.tilemap("platformer-level-1", 18, 18, 20, 50);
 
         // Add a tileset to the map
         // First parameter: name we gave the tileset in Tiled
@@ -44,6 +44,17 @@ class Platformer extends Phaser.Scene {
         this.groundLayer.setCollisionByProperty({
             collides: true
         });
+
+        this.groundLayer.forEachTile(tile => {
+            if (tile.properties.oneWay) {
+            // If it does, we'll change its collision rules
+            tile.setCollision(false, false, true, false);
+            // This means: setCollision(left, right, top, bottom)
+            // Only the top side will now be collidable.
+            }
+        });
+
+
 
         my.AKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         my.DKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
@@ -69,7 +80,7 @@ class Platformer extends Phaser.Scene {
 
         // set up player avatar
         //my.sprite.player = this.physics.add.sprite(game.config.width/4, game.config.height/2, "platformer_characters", "tile_0000.png").setScale(SCALE)
-        my.sprite.player = new Player(this, game.config.width/4 - 340, game.config.height/2 - 200, "platformer_characters", "tile_0000.png", my.AKey, my.DKey, my.SPACEKey, null, this.ACCELERATION, this.DRAG, this.JUMP_VELOCITY, this.playerParticleConfig).setScale(1);
+        my.sprite.player = new Player(this, game.config.width/4 - 200, game.config.height/2 + 350, "platformer_characters", "tile_0000.png", my.AKey, my.DKey, my.SPACEKey, null, this.ACCELERATION, this.DRAG, this.JUMP_VELOCITY, this.playerParticleConfig).setScale(1);
         this.Player = this.physics.add.existing(my.sprite.player, 0);
         this.Player.setCollideWorldBounds(true);
 
@@ -118,8 +129,8 @@ class Platformer extends Phaser.Scene {
         //camera
         this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
         this.cameras.main.startFollow(this.Player, true, 0.25, 0.25); // (target, [,roundPixels][,lerpX][,lerpY])
-        this.cameras.main.setDeadzone(200, 70);
-        this.cameras.main.setZoom(2.5);
+        this.cameras.main.setDeadzone(50, 70);
+        this.cameras.main.setZoom(3.5);
 
         
         
