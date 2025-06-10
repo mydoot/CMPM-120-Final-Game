@@ -18,7 +18,7 @@ class PlatformerLevel2 extends Phaser.Scene {
         this.DRAG = 1100;    // DRAG < ACCELERATION = icy slide
         this.physics.world.gravity.y = 1500;
         this.JUMP_VELOCITY = -625;
-        this.HEALTH = 5;
+        this.HEALTH = 3;
 
         this.CAM = this.cameras.main
 
@@ -40,7 +40,7 @@ class PlatformerLevel2 extends Phaser.Scene {
 
         // Create a new tilemap game object which uses 18x18 pixel tiles, and is
         // 45 tiles wide and 25 tiles tall.
-        this.map = this.add.tilemap("platformer-level-2", 18, 18, 20, 50);
+        this.map = this.add.tilemap("platformer-level-2", 18, 18, 20, 70);
 
         // Add a tileset to the map
         // First parameter: name we gave the tileset in Tiled
@@ -90,7 +90,7 @@ class PlatformerLevel2 extends Phaser.Scene {
         // Since createFromObjects returns an array of regular Sprites, we need to convert 
         // them into Arcade Physics sprites (STATIC_BODY, so they don't move) 
         this.physics.world.enable(this.keys, Phaser.Physics.Arcade.STATIC_BODY);
-
+        this.physics.world.setBounds(0,0,this.map.widthInPixels, this.map.heightInPixels);
         // Create a Phaser group out of the array this.coins
         // This will be used for collision detection below.
         this.keyGroup = this.add.group(this.keys);
@@ -101,7 +101,7 @@ class PlatformerLevel2 extends Phaser.Scene {
 
         // set up player avatar
         //my.sprite.player = this.physics.add.sprite(game.config.width/4, game.config.height/2, "platformer_characters", "tile_0000.png").setScale(SCALE)
-        my.sprite.player = new Player(this, game.config.width / 4 - 200, game.config.height / 2 + 350, "platformer_characters", "tile_0000.png", my.AKey, my.DKey, my.SPACEKey, null, this.ACCELERATION, this.DRAG, this.JUMP_VELOCITY, this.HEALTH, this.playerParticleConfig).setScale(1);
+        my.sprite.player = new Player(this, game.config.width / 4 - 140, game.config.height / 2 + 700, "platformer_characters", "tile_0000.png", my.AKey, my.DKey, my.SPACEKey, null, this.ACCELERATION, this.DRAG, this.JUMP_VELOCITY, this.HEALTH, this.playerParticleConfig).setScale(1);
         this.Player = this.physics.add.existing(my.sprite.player, 0);
         this.Player.setCollideWorldBounds(true);
 
@@ -327,7 +327,14 @@ class PlatformerLevel2 extends Phaser.Scene {
             player.takeDamage(1);
             console.log("player health = " + player.HP);
             this.changehealthtext()
-            this.damageCD = 100;
+            if (player.isDead == true){
+                this.MenuLabel.buttons.forEach((button, index) => {
+                button.visible = true;
+                if (index == 1) {
+                    button.visible = false;
+                }
+            })
+            }
 
         }
 

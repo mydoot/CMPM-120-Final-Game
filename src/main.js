@@ -34,7 +34,7 @@ let config = {
     },
     width: 1260,
     height: 900,
-    scene: [Load, Platformer]
+    scene: [Load, Platformer, PlatformerLevel2]
     /* plugins: {
         scene: [
             {
