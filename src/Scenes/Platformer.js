@@ -157,16 +157,22 @@ class Platformer extends Phaser.Scene {
 
         this.TEXT = "HP: " + this.Player.HP;
         this.labelText = this.add.text(0, 0, this.TEXT, {
-        fontSize: '10px'
+        fontSize: '10'
+        });
+
+        this.TEXT2 = "Restart"
+        this.labelText2 = this.add.text(0, 0, this.TEXT2, {
+        fontSize: '10'
         });
 
         this.TEXT2 = "Win or Lose"
         this.labelText2 = this.add.text(0, 0, this.TEXT2, {
-        fontSize: '10px'
+        fontSize: '10'
         });
 
+
 this.backgroundColor = 0x1f2645; 
-this.strokeColor = 0x5e92f3;
+this.strokeColor = 0xffffff;
 this.background = this.rexUI.add.roundRectangle(0, 0, 0, 0, 2, this.backgroundColor).setStrokeStyle(2, this.strokeColor);
 this.background2 = this.rexUI.add.roundRectangle(0, 0, 0, 0, 2, this.backgroundColor).setStrokeStyle(2, this.strokeColor);
 
@@ -196,6 +202,20 @@ this.background2 = this.rexUI.add.roundRectangle(0, 0, 0, 0, 2, this.backgroundC
             },
         });
 
+        this.MenuLabel.setInteractive()
+            .on('pointerdown', () => { 
+                console.log('Button clicked!');
+                //this.MenuLabel.getElement('text').setText('Clicked!');
+            })
+            .on('pointerover', () => { 
+            // Make the background slightly darker on hover
+             this.MenuLabel.getElement('background').setStrokeStyle(1, 0xffffff);
+            })
+            .on('pointerout', () => { 
+            // Remove the stroke
+            this.MenuLabel.getElement('background').setStrokeStyle();
+            });
+
         this.label.layout();
         this.label.setScrollFactor(0)
         this.label.getElement('background').setDepth(0);
@@ -207,8 +227,13 @@ this.background2 = this.rexUI.add.roundRectangle(0, 0, 0, 0, 2, this.backgroundC
         this.MenuLabel.getElement('text').setDepth(1);
 
         this.MenuLabel.visible = false;
-        
 
+         console.log('Button created:', this.MenuLabel);
+
+         /* this.MenuLabel.setInteractive().on('pointerdown', () => {
+        console.log('Standard Phaser pointerdown event fired!');
+}); */
+        
     }
 
     update() {

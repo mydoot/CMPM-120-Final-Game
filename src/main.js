@@ -29,6 +29,9 @@ let config = {
             }
         }
     },
+    debug: {
+        input: true
+    },
     width: 1260,
     height: 900,
     scene: [Load, Platformer]
