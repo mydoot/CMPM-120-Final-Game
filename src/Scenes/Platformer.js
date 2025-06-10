@@ -62,7 +62,8 @@ class Platformer extends Phaser.Scene {
         });
 
         this.foreLayer.setCollisionByProperty({
-            danger: true
+            danger: true,
+            win: true
         });
 
         this.groundLayer.forEachTile(tile => {
@@ -74,12 +75,6 @@ class Platformer extends Phaser.Scene {
             }
         });
 
-         this.groundLayer.forEachTile(tile => {
-            if (tile.properties.danger) {
-            tile.setCollision(false, false, true, false);
-            
-            }
-        });
 
 
         my.AKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
@@ -165,11 +160,17 @@ class Platformer extends Phaser.Scene {
         fontSize: '10px'
         });
 
+        this.TEXT2 = "Win or Lose"
+        this.labelText2 = this.add.text(0, 0, this.TEXT2, {
+        fontSize: '10px'
+        });
+
 this.backgroundColor = 0x1f2645; 
 this.strokeColor = 0x5e92f3;
 this.background = this.rexUI.add.roundRectangle(0, 0, 0, 0, 2, this.backgroundColor).setStrokeStyle(2, this.strokeColor);
-        
-this.label = this.rexUI.add.label({
+this.background2 = this.rexUI.add.roundRectangle(0, 0, 0, 0, 2, this.backgroundColor).setStrokeStyle(2, this.strokeColor);
+
+        this.label = this.rexUI.add.label({
             x: this.cameras.main.width / 2 - 145,
             y: this.cameras.main.height / 2 - 110,
             background: this.background,
@@ -182,10 +183,30 @@ this.label = this.rexUI.add.label({
             },
         });
 
+        this.MenuLabel = this.rexUI.add.label({
+            x: this.cameras.main.width / 2,
+            y: this.cameras.main.height / 2,
+            background: this.background2,
+            text: this.labelText2,
+            space: {
+            left: 15,
+            right: 15,
+            top: 10,
+            bottom: 10
+            },
+        });
+
         this.label.layout();
         this.label.setScrollFactor(0)
         this.label.getElement('background').setDepth(0);
         this.label.getElement('text').setDepth(1);
+
+        this.MenuLabel.layout();
+        this.MenuLabel.setScrollFactor(0)
+        this.MenuLabel.getElement('background').setDepth(0);
+        this.MenuLabel.getElement('text').setDepth(1);
+
+        this.MenuLabel.visible = false;
         
 
     }
@@ -211,13 +232,24 @@ this.label = this.rexUI.add.label({
     }
 
     TileEffecthandler(player, tile){
-            if (tile.properties.danger) {
-                console.log("taken 1 damage");
-                player.takeDamage(1);
-                console.log("player health = " + player.HP);
-                this.changehealthtext()
-                this.damageCD = 100;
-               
-            }
+        if (tile.properties.danger) {
+            /* const now = this.time.now;
+            if (!player.damageTime || now > player.damageTime + 1000) { // 1000ms = 1 second
+                player.health -= damagePerSecond;
+                player.lastLavaDamage = now;
+                console.log("Player took lava damage! Health:", player.health);
+            } */
+            console.log("taken 1 damage");
+            player.takeDamage(1);
+            console.log("player health = " + player.HP);
+            this.changehealthtext()
+            this.damageCD = 100;
+
+        }
+
+        if (tile.properties.win) {
+            this.MenuLabel.visible = true;
+
+        }
     }
 }

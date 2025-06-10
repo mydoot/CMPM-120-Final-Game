@@ -19,6 +19,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.DRAG = drag;
         this.ACCELERATION = acceleration;
         this.HP = health;
+        this.isInvincible = false;
 
         this.vfx = {};
 
@@ -134,7 +135,15 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     takeDamage(amnt){
-        this.HP -= amnt;
+        if (this.isInvincible == false) {
+            this.HP -= amnt;
+            this.isInvincible = true;
+            this.setAlpha(0.5);
+            this.scene.time.delayedCall(1000, () => {
+                this.isInvincible = false;
+                this.setAlpha(1);
+            })
+        }
     }
 
 }
