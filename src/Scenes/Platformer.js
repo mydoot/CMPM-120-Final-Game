@@ -3,6 +3,15 @@ class Platformer extends Phaser.Scene {
         super("platformerScene");
     }
 
+    preload() {
+        
+       this.load.scenePlugin({
+    key: 'rexuiplugin',
+    url: "./lib/rexuiplugin.min.js",
+    sceneKey: 'rexUI'
+});
+    }
+
     init() {
         // variables and settings
         this.ACCELERATION = 500;
@@ -13,9 +22,13 @@ class Platformer extends Phaser.Scene {
         this.CAM = this.cameras.main
 
         this.vfx = {};
+
     }
 
     create() {
+
+        this.load.scenePlugin('rexuiplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js', 'rexUI', 'rexUI');
+
 
         this.playerParticleConfig = {
             jsonkey: 'kenny-particles',
@@ -54,6 +67,12 @@ class Platformer extends Phaser.Scene {
             }
         });
 
+         this.groundLayer.forEachTile(tile => {
+            if (tile.properties.danger) {
+            tile.setCollision(false, false, true, false);
+            
+            }
+        });
 
 
         my.AKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
@@ -109,7 +128,6 @@ class Platformer extends Phaser.Scene {
             maxParticles: 5,
             //quantity: 5
 
-                
             });
 
             this.CoinParticle.start();
@@ -132,7 +150,32 @@ class Platformer extends Phaser.Scene {
         this.cameras.main.setDeadzone(50, 70);
         this.cameras.main.setZoom(3.5);
 
+        this.TEXT = "HP: 5";
+        this.labelText = this.add.text(0, 0, this.TEXT, {
+        fontSize: '10px'
+        });
+
+this.backgroundColor = 0x1f2645; 
+this.strokeColor = 0x5e92f3;
+this.background = this.rexUI.add.roundRectangle(0, 0, 0, 0, 2, this.backgroundColor).setStrokeStyle(2, this.strokeColor);
         
+this.label = this.rexUI.add.label({
+            x: this.cameras.main.width / 2 - 145,
+            y: this.cameras.main.height / 2 - 110,
+            background: this.background,
+            text: this.labelText,
+            space: {
+            left: 15,
+            right: 15,
+            top: 10,
+            bottom: 10
+            },
+        });
+
+        this.label.layout();
+        this.label.setScrollFactor(0)
+        this.label.getElement('background').setDepth(0);
+        this.label.getElement('text').setDepth(1);
         
 
     }

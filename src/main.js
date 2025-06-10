@@ -29,18 +29,18 @@ let config = {
             }
         }
     },
-    plugins: {
-        scene: [
-            {
-                key: 'rexUI',
-                plugin: RexUIPlugin, // It finds this globally
-                mapping: 'rexUI'
-            }
-        ]
-    },
     width: 1260,
     height: 900,
     scene: [Load, Platformer]
+    /* plugins: {
+        scene: [
+            {
+                key: 'rexUI',         // <-- Must be a string 'rexUI'
+                plugin: RexUIPlugin,    // <-- Must be the variable RexUIPlugin
+                mapping: 'rexUI'        // <-- THIS IS THE MOST IMPORTANT PART
+            }
+        ]
+    } */
     
 }
 
