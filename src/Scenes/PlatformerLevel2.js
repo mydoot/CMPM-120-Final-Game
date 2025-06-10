@@ -1,6 +1,6 @@
-class Platformer extends Phaser.Scene {
+class PlatformerLevel2 extends Phaser.Scene {
     constructor() {
-        super("platformerScene");
+        super("platformerScene2");
     }
 
     preload() {
@@ -40,7 +40,7 @@ class Platformer extends Phaser.Scene {
 
         // Create a new tilemap game object which uses 18x18 pixel tiles, and is
         // 45 tiles wide and 25 tiles tall.
-        this.map = this.add.tilemap("platformer-level-1", 18, 18, 20, 50);
+        this.map = this.add.tilemap("platformer-level-2", 18, 18, 20, 50);
 
         // Add a tileset to the map
         // First parameter: name we gave the tileset in Tiled
@@ -248,9 +248,6 @@ class Platformer extends Phaser.Scene {
                     console.log('Button clicked!');
                     if (index == 0){
                         this.scene.restart();
-                    }
-                    else if (index == 1){
-                        this.scene.start("platformerScene2");
                     }
                 })
                 .on('pointerover', () => {
