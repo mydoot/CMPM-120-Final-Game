@@ -82,9 +82,9 @@ class Platformer extends Phaser.Scene {
         my.SPACEKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
         this.keys = this.map.createFromObjects("Objects", {
-            name: "key",
+            name: "coin",
             key: "tilemap_sheet",
-            frame: 27
+            frame: 151
         });
 
         // Since createFromObjects returns an array of regular Sprites, we need to convert 
