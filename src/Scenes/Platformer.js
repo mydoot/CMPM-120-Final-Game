@@ -18,11 +18,14 @@ class Platformer extends Phaser.Scene {
         this.DRAG = 1100;    // DRAG < ACCELERATION = icy slide
         this.physics.world.gravity.y = 1500;
         this.JUMP_VELOCITY = -625;
+        this.HEALTH = 5;
 
         this.CAM = this.cameras.main
 
         this.vfx = {};
 
+        this.DamageCD = 100;
+        this.counter = 0;
     }
 
     create() {
@@ -56,6 +59,10 @@ class Platformer extends Phaser.Scene {
         // Make it collidable
         this.groundLayer.setCollisionByProperty({
             collides: true
+        });
+
+        this.foreLayer.setCollisionByProperty({
+            danger: true
         });
 
         this.groundLayer.forEachTile(tile => {
@@ -99,12 +106,15 @@ class Platformer extends Phaser.Scene {
 
         // set up player avatar
         //my.sprite.player = this.physics.add.sprite(game.config.width/4, game.config.height/2, "platformer_characters", "tile_0000.png").setScale(SCALE)
-        my.sprite.player = new Player(this, game.config.width/4 - 200, game.config.height/2 + 350, "platformer_characters", "tile_0000.png", my.AKey, my.DKey, my.SPACEKey, null, this.ACCELERATION, this.DRAG, this.JUMP_VELOCITY, this.playerParticleConfig).setScale(1);
+        my.sprite.player = new Player(this, game.config.width/4 - 200, game.config.height/2 + 350, "platformer_characters", "tile_0000.png", my.AKey, my.DKey, my.SPACEKey, null, this.ACCELERATION, this.DRAG, this.JUMP_VELOCITY, this.HEALTH, this.playerParticleConfig).setScale(1);
         this.Player = this.physics.add.existing(my.sprite.player, 0);
         this.Player.setCollideWorldBounds(true);
 
         // Enable collision handling
         this.physics.add.collider(my.sprite.player, this.groundLayer);
+
+        // Unique effects with tiles
+        this.physics.add.overlap(my.sprite.player, this.foreLayer, this.TileEffecthandler, null, this);
 
 // Handle collision detection with coins
         this.physics.add.overlap(my.sprite.player, this.keyGroup, (obj1, obj2) => {
@@ -150,7 +160,7 @@ class Platformer extends Phaser.Scene {
         this.cameras.main.setDeadzone(50, 70);
         this.cameras.main.setZoom(3.5);
 
-        this.TEXT = "HP: 5";
+        this.TEXT = "HP: " + this.Player.HP;
         this.labelText = this.add.text(0, 0, this.TEXT, {
         fontSize: '10px'
         });
@@ -181,9 +191,33 @@ this.label = this.rexUI.add.label({
     }
 
     update() {
+        this.counter++;
+        //console.log(this.DamageCD);
+        
         //this.CAM.startFollow(this.Player, true, 0.7, 0.1);
         //this.CAM.setZoom(1.25);
         this.Player.update();
+
+        //changehealthtext()
        
+    }
+
+    changehealthtext(){
+        const textObject = this.label.getElement('text');
+
+        textObject.setText("HP: " + this.Player.HP);
+
+        this.label.layout();
+    }
+
+    TileEffecthandler(player, tile){
+            if (tile.properties.danger) {
+                console.log("taken 1 damage");
+                player.takeDamage(1);
+                console.log("player health = " + player.HP);
+                this.changehealthtext()
+                this.damageCD = 100;
+               
+            }
     }
 }

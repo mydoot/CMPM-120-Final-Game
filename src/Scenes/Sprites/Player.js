@@ -4,7 +4,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     // spriteKey - key for the sprite image asset
     // leftKey - key for moving left
     // rightKey - key for moving right
-    constructor(scene, x, y, texture, frame, leftKey, rightKey, jumpKey, playerSpeed, acceleration, drag, jumpVelocity, pconfig = {}) {
+    constructor(scene, x, y, texture, frame, leftKey, rightKey, jumpKey, playerSpeed, acceleration, drag, jumpVelocity, health, pconfig = {}) {
         super(scene, x, y, texture, frame);
 
          console.log("Player constructor received pconfig:", pconfig); // Add this line
@@ -18,6 +18,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.JUMP_VELOCITY = jumpVelocity;
         this.DRAG = drag;
         this.ACCELERATION = acceleration;
+        this.HP = health;
 
         this.vfx = {};
 
@@ -130,6 +131,10 @@ class Player extends Phaser.Physics.Arcade.Sprite {
               this.setVelocityY(this.JUMP_VELOCITY);
 
         }
+    }
+
+    takeDamage(amnt){
+        this.HP -= amnt;
     }
 
 }
