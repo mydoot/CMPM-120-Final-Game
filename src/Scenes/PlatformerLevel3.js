@@ -1,6 +1,6 @@
-class Platformer extends Phaser.Scene {
+class PlatformerLevel3 extends Phaser.Scene {
     constructor() {
-        super("platformerScene");
+        super("platformerScene3");
     }
 
     preload() {
@@ -32,19 +32,15 @@ class Platformer extends Phaser.Scene {
 
         this.load.scenePlugin('rexuiplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js', 'rexUI', 'rexUI');
 
+
         this.playerParticleConfig = {
             jsonkey: 'kenny-particles',
             spritekey: ['circle_05.png']
         };
 
-        this.playerParticleConfig2 = {
-            jsonkey: 'kenny-particles',
-            spritekey: ['magic_05.png']
-        };
-
         // Create a new tilemap game object which uses 18x18 pixel tiles, and is
         // 45 tiles wide and 25 tiles tall.
-        this.map = this.add.tilemap("platformer-level-1", 18, 18, 20, 50);
+        this.map = this.add.tilemap("platformer-level-3", 18, 18, 20, 70);
 
         // Add a tileset to the map
         // First parameter: name we gave the tileset in Tiled
@@ -79,13 +75,11 @@ class Platformer extends Phaser.Scene {
             }
         });
 
- const { width, height } = this.scale;
-         
-        this.scrollingBg = this.add.tileSprite(0, 0, width, height, 'cloudBackground')
+const {width, height} = this.scale;
+this.scrollingBg = this.add.tileSprite(0, 0, width, height, 'cloudBackground')
         .setOrigin(0, 0)
         .setScrollFactor(0, 0.5) // Make it stick to the camera for manual scrolling
         .setDepth(-10);
-
 
         my.AKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         my.DKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
@@ -100,7 +94,7 @@ class Platformer extends Phaser.Scene {
         // Since createFromObjects returns an array of regular Sprites, we need to convert 
         // them into Arcade Physics sprites (STATIC_BODY, so they don't move) 
         this.physics.world.enable(this.keys, Phaser.Physics.Arcade.STATIC_BODY);
-
+        this.physics.world.setBounds(0,0,this.map.widthInPixels, this.map.heightInPixels);
         // Create a Phaser group out of the array this.coins
         // This will be used for collision detection below.
         this.keyGroup = this.add.group(this.keys);
@@ -111,7 +105,7 @@ class Platformer extends Phaser.Scene {
 
         // set up player avatar
         //my.sprite.player = this.physics.add.sprite(game.config.width/4, game.config.height/2, "platformer_characters", "tile_0000.png").setScale(SCALE)
-        my.sprite.player = new Player(this, game.config.width / 4 - 140, game.config.height / 2 + 350, "platformer_characters", "tile_0000.png", my.AKey, my.DKey, my.SPACEKey, null, this.ACCELERATION, this.DRAG, this.JUMP_VELOCITY, this.HEALTH, this.playerParticleConfig).setScale(1);
+        my.sprite.player = new Player(this, game.config.width / 4 - 140, game.config.height / 2 + 700, "platformer_characters", "tile_0000.png", my.AKey, my.DKey, my.SPACEKey, null, this.ACCELERATION, this.DRAG, this.JUMP_VELOCITY, this.HEALTH, this.playerParticleConfig).setScale(1);
         this.Player = this.physics.add.existing(my.sprite.player, 0);
         this.Player.setCollideWorldBounds(true);
 
@@ -170,7 +164,6 @@ class Platformer extends Phaser.Scene {
 
         this.physics.world.drawDebug = false;
         this.physics.world.debugGraphic.clear()
-
 
         //camera
         this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
@@ -274,7 +267,7 @@ class Platformer extends Phaser.Scene {
                         this.scene.restart();
                     }
                     else if (index == 1){
-                        this.scene.start("platformerScene2");
+                        this.scene.start("platformerScene");
                     }
                 })
                 .on('pointerover', () => {
@@ -340,6 +333,7 @@ this.HitParticle = this.add.particles(0, 0, 'kenny-particles', {
             });
 
             this.HitParticle.stop();
+
     }
 
     update() {
@@ -395,14 +389,17 @@ this.HitParticle = this.add.particles(0, 0, 'kenny-particles', {
 
         }
 
-        if (tile.properties.win) {
+         if (tile.properties.win) {
             if (!player.hasWon) {
                 player.win();
                 this.MenuLabel.buttons.forEach((button, index) => {
                     button.visible = true;
                     this.label3.visible = true;
-                    this.label3.setText("LEVEL CLEARED");
+                    this.label3.setText("FINAL LEVEL CLEARED");
                     this.label3.layout();
+                    if (index == 1){
+                        button.setText("To Level 1")
+                    }
                 })
             }
         }
