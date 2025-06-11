@@ -4,12 +4,12 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     // spriteKey - key for the sprite image asset
     // leftKey - key for moving left
     // rightKey - key for moving right
-    constructor(scene, x, y, texture, frame, leftKey, rightKey, jumpKey, playerSpeed, acceleration, drag, jumpVelocity, health, pconfig = {}, pconfig2 = {}) {
+    constructor(scene, x, y, texture, frame, leftKey, rightKey, jumpKey, playerSpeed, acceleration, drag, jumpVelocity, health, pconfig = {}) {
         super(scene, x, y, texture, frame);
 
          console.log("Player constructor received pconfig:", pconfig); // Add this line
-    console.log("Is pconfig2.jsonkey present?", pconfig2 ? pconfig2.jsonkey : 'pconfig2 is falsy');
-    console.log("Is pconfig2.spritekey present?", pconfig2 ? pconfig2.spritekey : 'pconfig2 is falsy');
+    console.log("Is pconfig.jsonkey present?", pconfig ? pconfig.jsonkey : 'pconfig is falsy');
+    console.log("Is pconfig.spritekey present?", pconfig ? pconfig.spritekey : 'pconfig is falsy');
 
         this.left = leftKey;
         this.right = rightKey;
@@ -21,29 +21,35 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.HP = health;
         this.isInvincible = false;
         this.isDead = false;
+        this.hasWon = false;
+        this.walksfxCD = 500;
+        
+        this.walksfx = this.scene.sound.add("walk", {
+                            volume: 0.15   // Can adjust volume using this, goes from 0 to 1
+            });
 
         this.vfx = {};
 
         scene.add.existing(this);
         //this.setCollideWorldBounds(true);
 
-        this.initParticle(pconfig, pconfig2);
+        this.initParticle(pconfig);
 
         return this;
     }
 
-    initParticle(Particleconfig, Particleconfig2){
+    initParticle(Particleconfig){
 
-         if (!Particleconfig2 || !Particleconfig2.jsonkey || !Particleconfig2.spritekey) {
-            console.warn("Player: hit particle 'jsonkey' or 'spritekey' not provided in config.", Particleconfig2);
+         if (!Particleconfig || !Particleconfig.jsonkey || !Particleconfig.spritekey) {
+            console.warn("Player: Walk particle 'jsonkey' or 'spritekey' not provided in config.", Particleconfig);
             //console.log('Texture jsonkey exists:', this.textures.exists(Particleconfig.jsonkey));
             //console.log('Texture spritekey exists:', this.textures.exists(Particleconfig.spritekey));
             this.vfx.walk = undefined; // Explicitly mark as undefined or a no-op object
             return;
         }
 
-        if (!Particleconfig2) {
-            console.warn("No particle config 2 given")
+        if (!Particleconfig) {
+            console.warn("No particle config given")
         }
 
         this.vfx.walk = this.scene.add.particles(0, 0, Particleconfig.jsonkey , {
@@ -58,31 +64,10 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             alpha: {start: 0.5, end: 0.1}, 
         });
 
-        this.vfx.hit = this.scene.add.particles(0, 0, Particleconfig2.jsonkey, {
-            frame: Particleconfig2.spritekey,
-            //random: true,
-            scale: { start: 0.03, end: 0.2 },
-            //maxAliveParticles: 45,
-            alpha: { start: 0.5, end: 0.1 },
-            speedX: { min: -200, max: 200 },
-            speedY: -30,
-            angle: { min: 45, max: 135 },
-            gravityY: -340,
-            rotate: { min: 30, max: 360 },
-            lifespan: { min: 100, max: 1000 },
-            duration: 50,
-            maxParticles: 15,
-            //quantity: 5
-            //x: this.x,
-            //y: this.y
-        });
-        
-        //this.vfx.hit.start();
-
-        if (!this.vfx.hit) {
-            console.error("Player: Failed to create walk particle emitter with key:", Particleconfig2.jsonkey);
+        if (!this.vfx.walk) {
+            console.error("Player: Failed to create walk particle emitter with key:", Particleconfig.jsonkey);
         } 
-        else if (this.vfx.hit) {
+        else if (this.vfx.walk) {
             console.log("exists.");
         }
 
@@ -91,6 +76,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
 
     update() {
+        this.walksfxCD++;
+
         this.setMaxVelocity(500,1000);
         //console.log(this.body.velocity.x)
         if (!this.isDead) {
@@ -112,6 +99,12 @@ class Player extends Phaser.Physics.Arcade.Sprite {
                  if (this.body.blocked.down) {
      
                      this.vfx.walk.start();
+                     if (this.walksfxCD >= 20){
+                        this.scene.sound.play("walk", {
+                            volume: 0.05   // Can adjust volume using this, goes from 0 to 1
+            });
+                        this.walksfxCD = 0;
+                     }
                  }
                  else {
                      this.vfx.walk.stop();
@@ -132,7 +125,13 @@ class Player extends Phaser.Physics.Arcade.Sprite {
                  // Only play smoke effect if touching the ground
      
                  if (this.body.blocked.down) {
-     
+                     if (this.walksfxCD >= 20){
+                         this.scene.sound.play("walk", {
+                            volume: 0.05   // Can adjust volume using this, goes from 0 to 1
+            });
+                        this.walksfxCD = 0;
+                     }
+                    
                      this.vfx.walk.start();
      
                  }
@@ -169,15 +168,21 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     takeDamage(amnt){
     if (this.HP > 0){
         if (this.isInvincible == false) {
-            this.vfx.hit.startFollow(this, this.displayWidth/2, this.displayHeight/2, false);
-            this.vfx.hit.start();
-            //this.vfx.hit.setParticleSpeed(20, 0);
-            this.HP -= amnt;
             this.isInvincible = true;
+            this.scene.sound.play("hit", {
+                            volume: 0.5   // Can adjust volume using this, goes from 0 to 1
+            });
+            this.HP -= amnt;
+            if (this.HP == 0) {
+                this.die();
+            }
+            this.scene.cameras.main.shake(100, 0.0003);
+            if (this.scene.HitParticle){
+                this.scene.HitParticle.emitParticleAt(this.x, this.y);
+            }
             this.setAlpha(0.5);
             this.scene.time.delayedCall(750, () => {
                 this.isInvincible = false;
-                //this.vfx.hit.stop();
                 this.setAlpha(1);
             })
         }
@@ -187,6 +192,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     die(){
+        //this.scene.cameras.main.shake(100, 0.0015, true);
         this.isDead = true;
          this.JUMP_VELOCITY = 0;
         this.DRAG = 0;
@@ -198,6 +204,30 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.right = rightKey;
         this.jump = jumpKey; */
         this.vfx.walk.stop();
+       /*  this.scene.time.delayedCall(100, () => {
+               this.scene.cameras.main.shake(100, 0, true);
+            }) */
+    }
+
+    win(){
+        //this.scene.cameras.main.shake(100, 0.0015, true);
+        this.scene.sound.play("win", {
+                            volume: 0.5   // Can adjust volume using this, goes from 0 to 1
+            });
+         this.JUMP_VELOCITY = 0;
+        this.DRAG = 9999;
+        this.ACCELERATION = 0;
+        this.HP = 0;
+        this.isInvincible = true;
+        //this.visible = false;
+        this.hasWon = true;
+        //this.setVelocityX(0);
+       //this.setVelocityY(0);
+         /* this.left = leftKey;
+        this.right = rightKey;
+        this.jump = jumpKey; */
+        this.vfx.walk.stop();
+        
     }
 
 }

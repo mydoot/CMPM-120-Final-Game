@@ -142,7 +142,9 @@ class PlatformerLevel2 extends Phaser.Scene {
         this.label.layout();
 
             this.CoinParticle.start();
-
+            this.sound.play("coin", {
+                            volume: 0.25   // Can adjust volume using this, goes from 0 to 1
+            });
             
         });
 
@@ -151,11 +153,13 @@ class PlatformerLevel2 extends Phaser.Scene {
 
 
         // debug key listener (assigned to D key)
-        this.input.keyboard.on('keydown-D', () => {
+        /* this.input.keyboard.on('keydown-D', () => {
             this.physics.world.drawDebug = this.physics.world.drawDebug ? false : true
             this.physics.world.debugGraphic.clear()
-        }, this);
+        }, this); */
 
+        this.physics.world.drawDebug = false;
+        this.physics.world.debugGraphic.clear()
 
         //camera
         this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
@@ -210,6 +214,15 @@ class PlatformerLevel2 extends Phaser.Scene {
             },
         });
 
+        this.label3 = this.rexUI.add.label({
+            x: this.cameras.main.width / 2,
+            y: this.cameras.main.height / 2 - 40,
+            background: this.rexUI.add.roundRectangle(0, 0, 0, 0, 2, this.backgroundColor).setStrokeStyle(2, this.strokeColor),
+            text: this.add.text(0, 0, "LEVEL FAILED", {
+                fontSize: '20px'
+            })
+        }),
+
         this.MenuLabel = this.rexUI.add.buttons({
             x: this.cameras.main.width / 2,
             y: this.cameras.main.height / 2,
@@ -249,6 +262,9 @@ class PlatformerLevel2 extends Phaser.Scene {
                     if (index == 0){
                         this.scene.restart();
                     }
+                    else if (index == 1){
+                        this.scene.start("platformerScene2");
+                    }
                 })
                 .on('pointerover', () => {
                     // Make the background slightly darker on hover
@@ -272,6 +288,13 @@ class PlatformerLevel2 extends Phaser.Scene {
         this.label2.getElement('background').setDepth(0);
         this.label2.getElement('text').setDepth(1);
 
+        this.label3.layout();
+        this.label3.setScrollFactor(0)
+        this.label3.getElement('background').setDepth(0);
+        this.label3.getElement('text').setDepth(1);
+
+        this.label3.visible = false; 
+
         this.MenuLabel.layout();
         this.MenuLabel.setScrollFactor(0)
         /* this.MenuLabel.getElement('background').setDepth(0);
@@ -284,6 +307,28 @@ class PlatformerLevel2 extends Phaser.Scene {
         /* this.MenuLabel.setInteractive().on('pointerdown', () => {
        console.log('Standard Phaser pointerdown event fired!');
 }); */
+
+this.HitParticle = this.add.particles(0, 0, 'kenny-particles', {
+                frame: 'magic_05.png',
+                scale: { start: 0.20, end: 0 },
+                tint: [0xffff00, 0xffd700, 0xffec8b],
+                blendMode: 'NORMAL',
+                x: my.sprite.player.x,
+                y: my.sprite.player.y,
+                //moveTo: true,
+                speedX: { min: -200, max: 200 },
+                speedY: -10,
+                angle: { min: 0, max: 360},
+                gravityY: 0,
+                rotate: { min: 30, max: 360 },
+                lifespan: { min: 100, max: 600 },
+                //duration: 5,
+                //maxParticles: 5,
+                quantity: 6
+
+            });
+
+            this.HitParticle.stop();
 
     }
 
@@ -326,6 +371,7 @@ class PlatformerLevel2 extends Phaser.Scene {
             console.log("taken 1 damage");
             player.takeDamage(1);
             console.log("player health = " + player.HP);
+            
             this.changehealthtext()
             if (player.isDead == true){
                 this.MenuLabel.buttons.forEach((button, index) => {
@@ -333,15 +379,22 @@ class PlatformerLevel2 extends Phaser.Scene {
                 if (index == 1) {
                     button.visible = false;
                 }
+                this.label3.visible = true;
             })
             }
 
         }
 
-        if (tile.properties.win) {
-            this.MenuLabel.buttons.forEach((button, index) => {
-                button.visible = true;
-            })
+         if (tile.properties.win) {
+            if (!player.hasWon) {
+                player.win();
+                this.MenuLabel.buttons.forEach((button, index) => {
+                    button.visible = true;
+                    this.label3.visible = true;
+                    this.label3.setText("LEVEL CLEARED");
+                    this.label3.layout();
+                })
+            }
         }
     }
 }

@@ -22,7 +22,11 @@ class Load extends Phaser.Scene {
         });
 
         this.load.multiatlas("kenny-particles", "kenny-particles.json");
-        
+
+        this.load.audio("hit", "61_Hit_03.wav");
+        this.load.audio("coin", "DSGNTonl_USABLE-Coin Zap_HY_PC-001.wav");
+        this.load.audio("win", "DSGNSynth_BUFF-Mecha Level Up_HY_PC-001.wav");
+        this.load.audio("walk", "DSGNMisc_STEP-Whimsical Step_HY_PC-002.wav");
     }
 
     create() {
