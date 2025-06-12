@@ -288,7 +288,7 @@ class PlatformerLevel3 extends Phaser.Scene {
                         this.scene.start("platformerScene");
                     }
                     else if (index == 2){
-                        this.scene.start("platformerScene1");
+                        this.scene.start("platformerScene2");
                     }
                 })
                 .on('pointerover', () => {
