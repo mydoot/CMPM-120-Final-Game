@@ -10,6 +10,9 @@ class Platformer extends Phaser.Scene {
             url: "./lib/rexuiplugin.min.js",
             sceneKey: 'rexUI'
         });
+
+        this.load.scenePlugin('AnimatedTiles', './lib/AnimatedTiles.js', 'animatedTiles', 'animatedTiles');  
+
     }
 
     init() {
@@ -32,6 +35,9 @@ class Platformer extends Phaser.Scene {
 
         this.load.scenePlugin('rexuiplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js', 'rexUI', 'rexUI');
 
+        this.sound.play("music", {
+                            volume: 0.50   // Can adjust volume using this, goes from 0 to 1
+            });
 
         this.playerParticleConfig = {
             jsonkey: 'kenny-particles',
@@ -80,7 +86,14 @@ class Platformer extends Phaser.Scene {
             }
         });
 
+        this.animatedTiles.init(this.map);
 
+        const { width, height } = this.scale;
+         
+        this.scrollingBg = this.add.tileSprite(0, 0, width, height, 'cloudBackground')
+        .setOrigin(0, 0)
+        .setScrollFactor(0, 0.25) // Make it stick to the camera for manual scrolling
+        .setDepth(-10);
 
         my.AKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         my.DKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);

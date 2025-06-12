@@ -10,6 +10,8 @@ class PlatformerLevel2 extends Phaser.Scene {
             url: "./lib/rexuiplugin.min.js",
             sceneKey: 'rexUI'
         });
+
+         this.load.scenePlugin('AnimatedTiles', './lib/AnimatedTiles.js', 'animatedTiles', 'animatedTiles');  
     }
 
     init() {
@@ -75,7 +77,12 @@ class PlatformerLevel2 extends Phaser.Scene {
             }
         });
 
-
+        const { width, height } = this.scale;
+         
+        this.scrollingBg = this.add.tileSprite(0, 0, width, height, 'cloudBackground')
+        .setOrigin(0, 0)
+        .setScrollFactor(0, 0.25) // Make it stick to the camera for manual scrolling
+        .setDepth(-10);
 
         my.AKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         my.DKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
@@ -152,6 +159,8 @@ class PlatformerLevel2 extends Phaser.Scene {
         cursors = this.input.keyboard.createCursorKeys();
 
 
+        this.animatedTiles.init(this.map);
+
         // debug key listener (assigned to D key)
         /* this.input.keyboard.on('keydown-D', () => {
             this.physics.world.drawDebug = this.physics.world.drawDebug ? false : true
@@ -162,6 +171,8 @@ class PlatformerLevel2 extends Phaser.Scene {
         this.physics.world.debugGraphic.clear()
 
         //camera
+        this.cameras.main.setScroll(0, 0);
+
         this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
         this.cameras.main.startFollow(this.Player, true, 0.25, 0.25); // (target, [,roundPixels][,lerpX][,lerpY])
         this.cameras.main.setDeadzone(50, 70);

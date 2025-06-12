@@ -885,6 +885,15 @@
                         }]
                 }, 
                 {
+                 "animation":[
+                        {
+                         "duration":300,
+                         "tileid":111
+                        }, 
+                        {
+                         "duration":300,
+                         "tileid":112
+                        }],
                  "id":111,
                  "properties":[
                         {

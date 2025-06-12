@@ -542,6 +542,15 @@
                         }]
                 }, 
                 {
+                 "animation":[
+                        {
+                         "duration":300,
+                         "tileid":111
+                        }, 
+                        {
+                         "duration":300,
+                         "tileid":112
+                        }],
                  "id":111,
                  "properties":[
                         {
@@ -657,6 +666,24 @@
                          "name":"collides",
                          "type":"bool",
                          "value":true
+                        }]
+                }, 
+                {
+                 "animation":[
+                        {
+                         "duration":550,
+                         "tileid":151
+                        }, 
+                        {
+                         "duration":550,
+                         "tileid":152
+                        }],
+                 "id":151,
+                 "properties":[
+                        {
+                         "name":"animKey",
+                         "type":"string",
+                         "value":"coin_spin"
                         }]
                 }],
          "tilewidth":18

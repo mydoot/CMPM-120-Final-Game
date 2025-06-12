@@ -16,12 +16,17 @@ class Load extends Phaser.Scene {
         this.load.tilemapTiledJSON("platformer-level-2", "Level 2.tmj");
         this.load.tilemapTiledJSON("platformer-level-3", "Level 3 real.tmj"); // Tilemap in JSON
    
+
         this.load.spritesheet("tilemap_sheet", "tilemap_packed.png", {
             frameWidth: 18,
             frameHeight: 18
         });
 
+        this.load.image('cloudBackground', "orig.png");
+
         this.load.multiatlas("kenny-particles", "kenny-particles.json");
+
+        this.load.audio("music", "Sunlight Through Leaves.wav");
 
         this.load.audio("hit", "61_Hit_03.wav");
         this.load.audio("coin", "DSGNTonl_USABLE-Coin Zap_HY_PC-001.wav");

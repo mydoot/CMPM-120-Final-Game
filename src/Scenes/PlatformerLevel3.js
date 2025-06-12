@@ -10,6 +10,8 @@ class PlatformerLevel3 extends Phaser.Scene {
             url: "./lib/rexuiplugin.min.js",
             sceneKey: 'rexUI'
         });
+
+         this.load.scenePlugin('AnimatedTiles', './lib/AnimatedTiles.js', 'animatedTiles', 'animatedTiles');  
     }
 
     init() {
@@ -75,7 +77,12 @@ class PlatformerLevel3 extends Phaser.Scene {
             }
         });
 
-
+        const { width, height } = this.scale;
+         
+        this.scrollingBg = this.add.tileSprite(0, 0, width, height, 'cloudBackground')
+        .setOrigin(0, 0)
+        .setScrollFactor(0, 0.25) // Make it stick to the camera for manual scrolling
+        .setDepth(-10);
 
         my.AKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         my.DKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
@@ -163,7 +170,11 @@ class PlatformerLevel3 extends Phaser.Scene {
         this.physics.world.drawDebug = false;
         this.physics.world.debugGraphic.clear()
 
+        this.animatedTiles.init(this.map);
+
         //camera
+        this.cameras.main.setScroll(0, 0);
+
         this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
         this.cameras.main.startFollow(this.Player, true, 0.25, 0.25); // (target, [,roundPixels][,lerpX][,lerpY])
         this.cameras.main.setDeadzone(50, 70);
@@ -397,6 +408,9 @@ this.HitParticle = this.add.particles(0, 0, 'kenny-particles', {
                 this.MenuLabel.buttons.forEach((button, index) => {
                 button.visible = true;
                 if (index == 1) {
+                    button.visible = false;
+                }
+                if (index == 2) {
                     button.visible = false;
                 }
                 this.label3.visible = true;
