@@ -1,6 +1,6 @@
-class PlatformerLevel2 extends Phaser.Scene {
+class PlatformerLevel3 extends Phaser.Scene {
     constructor() {
-        super("platformerScene2");
+        super("platformerScene3");
     }
 
     preload() {
@@ -40,7 +40,7 @@ class PlatformerLevel2 extends Phaser.Scene {
 
         // Create a new tilemap game object which uses 18x18 pixel tiles, and is
         // 45 tiles wide and 25 tiles tall.
-        this.map = this.add.tilemap("platformer-level-2", 18, 18, 20, 70);
+        this.map = this.add.tilemap("platformer-level-3", 18, 18, 20, 100);
 
         // Add a tileset to the map
         // First parameter: name we gave the tileset in Tiled
@@ -81,6 +81,8 @@ class PlatformerLevel2 extends Phaser.Scene {
         my.DKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
         my.SPACEKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
+        this.lKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.L);
+
         this.keys = this.map.createFromObjects("Objects", {
             name: "coin",
             key: "tilemap_sheet",
@@ -101,7 +103,7 @@ class PlatformerLevel2 extends Phaser.Scene {
 
         // set up player avatar
         //my.sprite.player = this.physics.add.sprite(game.config.width/4, game.config.height/2, "platformer_characters", "tile_0000.png").setScale(SCALE)
-        my.sprite.player = new Player(this, game.config.width / 4 - 140, game.config.height / 2 + 700, "platformer_characters", "tile_0000.png", my.AKey, my.DKey, my.SPACEKey, null, this.ACCELERATION, this.DRAG, this.JUMP_VELOCITY, this.HEALTH, this.playerParticleConfig).setScale(1);
+        my.sprite.player = new Player(this, game.config.width / 4 - 140, game.config.height / 2 + 1250, "platformer_characters", "tile_0000.png", my.AKey, my.DKey, my.SPACEKey, null, this.ACCELERATION, this.DRAG, this.JUMP_VELOCITY, this.HEALTH, this.playerParticleConfig).setScale(1);
         this.Player = this.physics.add.existing(my.sprite.player, 0);
         this.Player.setCollideWorldBounds(true);
 
@@ -240,10 +242,19 @@ class PlatformerLevel2 extends Phaser.Scene {
                     x: this.cameras.main.width / 2,
                     y: this.cameras.main.height / 2,
                     background: this.rexUI.add.roundRectangle(0, 0, 0, 0, 2, this.backgroundColor).setStrokeStyle(2, this.strokeColor),
-                    text: this.add.text(0, 0, "Next Level", {
+                    text: this.add.text(0, 0, "Level 1", {
                         fontSize: '10'
                     })
                 }),
+
+                this.button3 = this.rexUI.add.label({
+                    x: this.cameras.main.width / 2,
+                    y: this.cameras.main.height / 2,
+                    background: this.rexUI.add.roundRectangle(0, 0, 0, 0, 2, this.backgroundColor).setStrokeStyle(2, this.strokeColor),
+                    text: this.add.text(0, 0, "Level 2", {
+                        fontSize: '10'
+                    })
+                })
 
             ],
             space: {
@@ -263,7 +274,10 @@ class PlatformerLevel2 extends Phaser.Scene {
                         this.scene.restart();
                     }
                     else if (index == 1){
-                        this.scene.start("platformerScene3");
+                        this.scene.start("platformerScene");
+                    }
+                    else if (index == 1){
+                        this.scene.start("platformerScene1");
                     }
                 })
                 .on('pointerover', () => {
@@ -341,7 +355,13 @@ this.HitParticle = this.add.particles(0, 0, 'kenny-particles', {
         this.Player.update();
 
         //changehealthtext()
-
+/*
+        if (Phaser.Input.Keyboard.JustDown(this.lKey)) {
+            this.Player.HP += 1;
+            this.changehealthtext();
+            console.log("HP increased to:", this.Player.HP);
+        }
+*/
     }
 
     changehealthtext() {
@@ -391,7 +411,7 @@ this.HitParticle = this.add.particles(0, 0, 'kenny-particles', {
                 this.MenuLabel.buttons.forEach((button, index) => {
                     button.visible = true;
                     this.label3.visible = true;
-                    this.label3.setText("LEVEL CLEARED");
+                    this.label3.setText("YOU WIN");
                     this.label3.layout();
                 })
             }

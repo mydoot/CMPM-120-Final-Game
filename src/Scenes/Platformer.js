@@ -86,6 +86,8 @@ class Platformer extends Phaser.Scene {
         my.DKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
         my.SPACEKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
+        this.pKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P);
+
         this.keys = this.map.createFromObjects("Objects", {
             name: "coin",
             key: "tilemap_sheet",
@@ -346,7 +348,11 @@ this.HitParticle = this.add.particles(0, 0, 'kenny-particles', {
         this.Player.update();
 
         //changehealthtext()
-
+/*
+        if (Phaser.Input.Keyboard.JustDown(this.pKey)) {
+            this.scene.start("platformerScene3"); 
+        }
+*/
     }
 
     changehealthtext() {
