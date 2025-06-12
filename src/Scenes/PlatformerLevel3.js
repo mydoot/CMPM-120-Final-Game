@@ -287,7 +287,7 @@ class PlatformerLevel3 extends Phaser.Scene {
                     else if (index == 1){
                         this.scene.start("platformerScene");
                     }
-                    else if (index == 1){
+                    else if (index == 2){
                         this.scene.start("platformerScene1");
                     }
                 })
