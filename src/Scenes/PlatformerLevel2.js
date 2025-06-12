@@ -75,11 +75,7 @@ class PlatformerLevel2 extends Phaser.Scene {
             }
         });
 
- const {width, height} = this.scale;
-this.scrollingBg = this.add.tileSprite(0, 0, width, height, 'cloudBackground')
-        .setOrigin(0, 0)
-        .setScrollFactor(0, 0.5) // Make it stick to the camera for manual scrolling
-        .setDepth(-10);
+
 
         my.AKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         my.DKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
@@ -267,7 +263,7 @@ this.scrollingBg = this.add.tileSprite(0, 0, width, height, 'cloudBackground')
                         this.scene.restart();
                     }
                     else if (index == 1){
-                        this.scene.start("platformerScene3");
+                        this.scene.start("platformerScene2");
                     }
                 })
                 .on('pointerover', () => {

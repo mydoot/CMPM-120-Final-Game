@@ -16,10 +16,6 @@ class Load extends Phaser.Scene {
         
         this.load.tilemapTiledJSON("platformer-level-2", "Level 2.tmj"); // Tilemap in JSON
    
-        this.load.tilemapTiledJSON("platformer-level-3", "Level 3.tmj"); 
-
-        this.load.image('cloudBackground', "frogatto-cloud-example.png");
-
         this.load.spritesheet("tilemap_sheet", "tilemap_packed.png", {
             frameWidth: 18,
             frameHeight: 18

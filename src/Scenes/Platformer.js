@@ -32,6 +32,7 @@ class Platformer extends Phaser.Scene {
 
         this.load.scenePlugin('rexuiplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js', 'rexUI', 'rexUI');
 
+
         this.playerParticleConfig = {
             jsonkey: 'kenny-particles',
             spritekey: ['circle_05.png']
@@ -79,12 +80,6 @@ class Platformer extends Phaser.Scene {
             }
         });
 
- const { width, height } = this.scale;
-         
-        this.scrollingBg = this.add.tileSprite(0, 0, width, height, 'cloudBackground')
-        .setOrigin(0, 0)
-        .setScrollFactor(0, 0.5) // Make it stick to the camera for manual scrolling
-        .setDepth(-10);
 
 
         my.AKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
